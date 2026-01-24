@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fedex-chatbot-api
+    ports:
+      - "8000:8000"
+    environment:
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-mistral}
+      - CHROMA_PERSIST_DIR=/app/data/chroma_db
+    volumes:
+      - ./data/chroma_db:/app/data/chroma_db
+      - ./server:/app/server
+      - ./rag:/app/rag
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - fedex-network
+
+  # Ollama (local LLM)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: fedex-chatbot-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - fedex-network
+    # Pull model on startup
+    command: >
+      sh -c "ollama serve & sleep 10 && ollama pull ${OLLAMA_MODEL:-mistral} && wait"
+
+  # Developer Portal (static site)
+  portal:
+    image: nginx:alpine
+    container_name: fedex-chatbot-portal
+    ports:
+      - "8001:80"
+    volumes:
+      - ./portal:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - fedex-network
+
+volumes:
+  ollama-data:
+  chroma-data:
+
+networks:
+  fedex-network:
+    driver: bridge

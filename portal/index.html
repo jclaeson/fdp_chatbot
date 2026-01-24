@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedEx API Assistant - Developer Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>FedEx API Assistant</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#demo">Try It</a>
+                <a href="#install">Install</a>
+                <a href="http://localhost:8000/docs" target="_blank">API Docs</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Your AI-Powered Guide to FedEx APIs</h2>
+                <p class="hero-subtitle">Get instant answers about FedEx developer documentation using RAG-powered AI. Powered by Ollama for speed and Claude for accuracy.</p>
+                <div class="hero-buttons">
+                    <a href="#demo" class="btn btn-primary">Try Live Demo</a>
+                    <a href="#install" class="btn btn-secondary">Get Chrome Extension</a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number" id="docs-count">0</div>
+                    <div class="stat-label">Documents Indexed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Free (Ollama)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">&lt;2s</div>
+                    <div class="stat-label">Avg Response Time</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Why Use FedEx API Assistant?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get answers in seconds using local Ollama models for common questions. No API costs for 70% of queries.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Highly Accurate</h3>
+                    <p>Complex questions automatically route to Claude for nuanced, expert-level responses with source citations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Cost Effective</h3>
+                    <p>Intelligent routing keeps costs low. Estimated $10-20/month for typical usage vs $100+ with Claude-only.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Easy Integration</h3>
+                    <p>Chrome extension for instant access, REST API for custom integrations, or web interface for quick queries.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy First</h3>
+                    <p>Run locally with Ollama. Your queries and API keys stay on your machine unless you choose Claude.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="demo">
+        <div class="container">
+            <h2>Try It Now</h2>
+            <p class="section-subtitle">Ask anything about FedEx APIs</p>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <p>Hi! I'm your FedEx API assistant. Ask me anything about FedEx developer documentation, APIs, authentication, endpoints, or best practices.</p>
+                            <p class="message-meta">Powered by RAG + AI</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="quick-questions">
+                        <button class="quick-q" data-q="How do I authenticate with the FedEx API?">Authentication</button>
+                        <button class="quick-q" data-q="What is the tracking API endpoint?">Tracking API</button>
+                        <button class="quick-q" data-q="Show me an example shipment request">Example Request</button>
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <input
+                            type="text"
+                            id="chat-input"
+                            placeholder="Ask about FedEx APIs..."
+                            autocomplete="off"
+                        />
+                        <button id="send-btn" class="send-btn">
+                            <span>Send</span>
+                        </button>
+                    </div>
+                    <div class="input-meta">
+                        <span id="model-indicator">Model: Auto</span>
+                        <span id="status-indicator">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install">
+        <div class="container">
+            <h2>Get Started</h2>
+
+            <div class="install-options">
+                <div class="install-card">
+                    <h3>🌐 Chrome Extension</h3>
+                    <p>Quick access from any page while browsing FedEx documentation</p>
+                    <ol>
+                        <li>Download <code>extension.zip</code></li>
+                        <li>Extract and open Chrome extensions (chrome://extensions/)</li>
+                        <li>Enable "Developer mode" and click "Load unpacked"</li>
+                        <li>Select the extension folder</li>
+                    </ol>
+                    <a href="../extension.zip" class="btn btn-primary" download>Download Extension</a>
+                </div>
+
+                <div class="install-card">
+                    <h3>💻 Local Setup</h3>
+                    <p>Run the full stack locally for development or self-hosting</p>
+                    <div class="code-block">
+<pre><code># Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull mistral
+
+# Clone and setup
+git clone &lt;your-repo&gt;
+cd fedex-api-chatbot
+
+# Install dependencies
+pip install -r scraper/requirements.txt
+pip install -r rag/requirements.txt
+pip install -r server/requirements.txt
+
+# Run scraper
+cd scraper && python main.py --max-pages 50
+
+# Index documents
+cd ../rag && python vectorstore.py ../scraper/scraped_data/chunked_data.json
+
+# Start server
+cd ../server && uvicorn main:app --reload</code></pre>
+                    </div>
+                    <a href="https://github.com/jclaeson/fedex-api-chatbot" class="btn btn-secondary" target="_blank">View on GitHub</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="architecture">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="arch-diagram">
+                <div class="arch-step">
+                    <div class="arch-number">1</div>
+                    <h4>Scrape Documentation</h4>
+                    <p>Web scraper extracts content from developer.fedex.com</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-number">2</div>
+                    <h4>Create Embeddings</h4>
+                    <p>Content chunked and embedded using sentence transformers</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-number">3</div>
+                    <h4>Store in Vector DB</h4>
+                    <p>Embeddings indexed in Chroma for semantic search</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-number">4</div>
+                    <h4>Intelligent Routing</h4>
+                    <p>Query analyzed and routed to Ollama or Claude</p>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-step">
+                    <div class="arch-number">5</div>
+                    <h4>Generate Response</h4>
+                    <p>AI generates answer using retrieved context</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Built with FastAPI, Ollama, Claude, and Chroma | <a href="http://localhost:8000/docs" target="_blank">API Documentation</a></p>
+            <p class="footer-note">Not affiliated with FedEx Corporation. This is an independent developer tool.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

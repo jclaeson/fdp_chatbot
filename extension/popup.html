@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedEx API Assistant</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>FedEx API Assistant</h1>
+            <div class="status" id="status">
+                <span class="status-dot"></span>
+                <span id="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <div class="chat-container" id="chat-container">
+            <div class="welcome-message">
+                <p>👋 Hi! I can help you with FedEx API documentation.</p>
+                <p class="welcome-sub">Ask me anything!</p>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <textarea
+                id="message-input"
+                placeholder="Ask about FedEx APIs..."
+                rows="2"
+            ></textarea>
+            <button id="send-button" class="send-button">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 10l16-8-8 16-2-6-6-2z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-action" data-query="How do I authenticate?">🔐 Auth</button>
+            <button class="quick-action" data-query="Tracking API endpoint">📦 Tracking</button>
+            <button class="quick-action" data-query="Rate API example">💰 Rates</button>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-stats">
+                <span id="model-used">Model: Auto</span>
+                <span id="response-time"></span>
+            </div>
+            <a href="http://localhost:8001" target="_blank" class="settings-link">⚙️ Settings</a>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

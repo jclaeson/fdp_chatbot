@@ -93,15 +93,20 @@ class VectorStore:
             # Extract data
             ids = [chunk['chunk_id'] for chunk in batch]
             texts = [chunk['content'] for chunk in batch]
-            metadatas = [
-                {
+
+            # Build metadata, filtering out None values (ChromaDB doesn't accept None)
+            metadatas = []
+            for chunk in batch:
+                metadata = {
                     'source_url': chunk['source_url'],
                     'title': chunk['title'],
                     'chunk_index': chunk['chunk_index'],
-                    **chunk['metadata']
                 }
-                for chunk in batch
-            ]
+                # Add chunk metadata, filtering out None values
+                for key, value in chunk.get('metadata', {}).items():
+                    if value is not None:
+                        metadata[key] = value
+                metadatas.append(metadata)
 
             # Generate embeddings
             embeddings = self.embedding_model.embed_texts(texts)

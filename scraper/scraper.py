@@ -23,15 +23,14 @@ class FedExScraper:
     """Scrapes documentation from FedEx Developer Portal"""
 
     BASE_URL = "https://developer.fedex.com"
+    START_URL = "https://developer.fedex.com/api/en-us/home.html"
 
     # Priority sections to scrape
     TARGET_SECTIONS = [
-        "/api",
-        "/docs",
-        "/documentation",
-        "/guides",
-        "/reference",
-        "/tutorials"
+        "/api/en-us/catalog",
+        "/api/en-us/get-started",
+        "/api/en-us/guides",
+        "/api/en-us/reference"
     ]
 
     def __init__(self, output_dir: str = "scraped_data"):
@@ -65,8 +64,8 @@ class FedExScraper:
             context = await browser.new_context()
             page = await context.new_page()
 
-            # Start with main API docs page
-            await self._scrape_page_playwright(page, f"{self.BASE_URL}/api", max_pages)
+            # Start with homepage
+            await self._scrape_page_playwright(page, self.START_URL, max_pages)
 
             await browser.close()
 
@@ -108,7 +107,7 @@ class FedExScraper:
     async def _scrape_with_requests(self, max_pages: int):
         """Scrape using aiohttp for static content"""
         async with aiohttp.ClientSession() as session:
-            await self._scrape_page_requests(session, f"{self.BASE_URL}/api", max_pages)
+            await self._scrape_page_requests(session, self.START_URL, max_pages)
 
     async def _scrape_page_requests(self, session, url: str, max_pages: int):
         """Scrape individual page with requests"""
@@ -240,9 +239,15 @@ class FedExScraper:
     async def _extract_links(self, page, soup: BeautifulSoup) -> List[str]:
         """Extract relevant links from page"""
         links = []
+        current_url = page.url
+
         for a_tag in soup.find_all('a', href=True):
             href = a_tag['href']
-            full_url = urljoin(self.BASE_URL, href)
+            # Use current page URL as base for relative links
+            full_url = urljoin(current_url, href)
+
+            # Remove fragments
+            full_url = full_url.split('#')[0]
 
             if self._is_valid_url(full_url):
                 links.append(full_url)
@@ -273,20 +278,20 @@ class FedExScraper:
         skip_patterns = [
             '/login', '/signin', '/signup', '/register',
             '/logout', '/account', '/profile', '/settings',
-            '.pdf', '.zip', '.png', '.jpg', '.jpeg', '.gif',
-            '/search', '/contact'
+            '.pdf', '.zip', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.css', '.js',
+            '/search', '/contact', '/support', '/terms', '/privacy',
+            '#', 'javascript:', 'mailto:'
         ]
 
         if any(pattern in url.lower() for pattern in skip_patterns):
             return False
 
-        # Prefer documentation URLs
-        priority_patterns = [
-            '/api', '/docs', '/documentation', '/guide',
-            '/reference', '/tutorial', '/rest'
-        ]
+        # Must include /api/en-us/ path (the actual docs section)
+        if '/api/en-us/' not in url.lower():
+            return False
 
-        return any(pattern in url.lower() for pattern in priority_patterns)
+        # Prefer documentation URLs (but allow all /api/en-us/ paths)
+        return True
 
     def _save_results(self):
         """Save scraped content to files"""

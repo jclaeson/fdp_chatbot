@@ -7,7 +7,7 @@ import re
 from typing import Tuple, Optional
 from dataclasses import dataclass
 
-from config import get_settings
+from server.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()

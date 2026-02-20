@@ -71,6 +71,55 @@ Thumbs.db
 *.temp
 .cache/
 
+# Deployment experiments / scratch scripts
+deploy-simple.sh
+deploy-fixed.sh
+deploy-final.sh
+deploy-final-fix.sh
+deploy-latest.sh
+deploy-working.sh
+deploy-appservice.sh
+deploy-containerapp.sh
+deploy-containerapp-final.sh
+deploy-try-regions.sh
+deploy-with-fixed-anthropic.sh
+deploy-frontend-azure.sh
+deploy.sh
+fix-env.sh
+force-rebuild.sh
+quick-redeploy.sh
+rebuild-fresh.sh
+redeploy-containerapp.sh
+set-api-key.sh
+set-key-and-deploy.sh
+prepare-frontend-deploy.sh
+update-portal-config.sh
+check-containerapp-status.sh
+check-env-vars.sh
+check_vectorstore.py
+ingest_docs_azure.sh
+
+# Temp docs generated during development
+AZURE_DEPLOYMENT.md
+AZURE_FILES_SUMMARY.md
+AZURE_INGESTION_GUIDE.md
+AZURE_SUMMARY.md
+AZURE_VISUAL_GUIDE.txt
+CONTAINER_APPS_DEPLOY.md
+DEPLOYMENT_ANALYSIS.md
+DEPLOYMENT_CHECKLIST.md
+QUICK_DEPLOY.md
+startup.txt
+"startup.txt\r"
+
+# Build artifacts
+app.zip
+*.zip
+Dockerfile.azure
+.deployment
+LogFiles/
+deployments/
+
 # Model files
 *.bin
 *.pt

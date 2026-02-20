@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FedEx API Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            color: #4a148c;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #666;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4a148c;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .stat-change.positive {
+            color: #2e7d32;
+        }
+
+        .stat-change.negative {
+            color: #c62828;
+        }
+
+        .section-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-card h2 {
+            margin: 0 0 1rem 0;
+            color: #4a148c;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-indicator.online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-indicator.offline {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #4a148c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #7b1fa2;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53935;
+        }
+
+        .queries-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .queries-table th,
+        .queries-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .queries-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .queries-table tr:hover {
+            background: #fafafa;
+        }
+
+        .query-text {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .model-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .model-badge.claude {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+
+        .model-badge.ollama {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div class="admin-actions">
+                <a href="index.html" class="btn btn-secondary">Back to Home</a>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <h3>Total Requests</h3>
+                <div class="stat-value" id="total-requests">0</div>
+                <div class="stat-change" id="requests-change">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Unique Users</h3>
+                <div class="stat-value" id="unique-users">0</div>
+                <div class="stat-change" id="users-change">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Avg Response Time</h3>
+                <div class="stat-value" id="avg-response-time">0s</div>
+                <div class="stat-change" id="response-change">Loading...</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Server Uptime</h3>
+                <div class="stat-value" id="server-uptime">0h</div>
+                <div class="stat-change" id="uptime-info">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Server Status -->
+        <div class="section-card">
+            <h2>Server Status</h2>
+            <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <strong>API Server:</strong>
+                    <span id="api-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        Checking...
+                    </span>
+                </div>
+                <div>
+                    <strong>Claude API:</strong>
+                    <span id="claude-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        Checking...
+                    </span>
+                </div>
+                <div>
+                    <strong>Ollama:</strong>
+                    <span id="ollama-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        Checking...
+                    </span>
+                </div>
+                <div>
+                    <strong>Vector Store:</strong>
+                    <span id="vector-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        Checking...
+                    </span>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <button id="restart-btn" class="btn btn-danger">Restart Server</button>
+                <button id="refresh-status-btn" class="btn btn-secondary">Refresh Status</button>
+            </div>
+        </div>
+
+        <!-- Documentation Scraper -->
+        <div class="section-card">
+            <h2>Documentation Scraper</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Scrape FedEx Developer Portal and ingest into vector store</p>
+
+            <div style="margin-bottom: 1.5rem;">
+                <strong>Status:</strong>
+                <span id="scraper-status" class="status-indicator">
+                    <span class="status-dot"></span>
+                    Checking...
+                </span>
+                <span id="scraper-progress" style="margin-left: 1rem; color: #666;"></span>
+            </div>
+
+            <div class="scraper-config" style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 1rem;">Configuration</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Max Pages</label>
+                        <input type="number" id="max-pages" min="1" max="500" value="50" class="form-input">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Max Depth</label>
+                        <input type="number" id="max-depth" min="1" max="10" value="3" class="form-input">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Delay (ms)</label>
+                        <input type="number" id="delay-ms" min="0" max="5000" value="1000" class="form-input">
+                    </div>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Start URLs (one per line)</label>
+                    <textarea id="start-urls" rows="3" class="form-input" style="width: 100%; font-family: monospace;">https://developer.fedex.com/api/en-us/home.html
+https://developer.fedex.com/api/en-us/catalog.html</textarea>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button id="save-config-btn" class="btn btn-secondary">Save Configuration</button>
+                <button id="start-scrape-btn" class="btn btn-primary">Start Scraping</button>
+                <button id="ingest-btn" class="btn btn-primary">Ingest into Vector Store</button>
+                <button id="scrape-and-ingest-btn" class="btn" style="background: #4a148c;">Scrape & Ingest</button>
+            </div>
+
+            <div id="scraper-output" style="margin-top: 1.5rem; padding: 1rem; background: #f5f5f5; border-radius: 8px; display: none;">
+                <h4 style="margin: 0 0 0.5rem 0;">Output:</h4>
+                <pre id="scraper-output-text" style="margin: 0; white-space: pre-wrap; font-size: 0.875rem;"></pre>
+            </div>
+        </div>
+
+        <!-- Recent Queries -->
+        <div class="section-card">
+            <h2>Recent Queries (Last 50)</h2>
+            <div id="queries-container">
+                <div class="loading">Loading queries...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

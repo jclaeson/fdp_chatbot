@@ -1,0 +1,26 @@
+# Core API Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+
+# Claude API (updated version)
+anthropic==0.40.0
+
+# HTTP client
+httpx==0.25.1
+
+# RAG and Vector Store
+chromadb==0.4.18
+sentence-transformers==2.2.2
+torch==2.1.1
+transformers==4.35.2
+huggingface-hub==0.17.3
+tokenizers==0.14.1
+numpy==1.24.3
+
+# Web scraping
+beautifulsoup4==4.12.2
+lxml==4.9.3
+aiohttp==3.9.0

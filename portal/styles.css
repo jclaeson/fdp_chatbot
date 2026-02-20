@@ -1,7 +1,7 @@
 :root {
-    --primary: #4f46e5;
-    --primary-dark: #4338ca;
-    --secondary: #64748b;
+    --primary: #4d148c;
+    --primary-dark: #3a0f69;
+    --secondary: #ff6200;
     --success: #10b981;
     --bg: #ffffff;
     --bg-alt: #f8fafc;
@@ -71,7 +71,7 @@ body {
 /* Hero */
 .hero {
     padding: 4rem 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4d148c 0%, #ff6200 100%);
     color: white;
 }
 
@@ -405,6 +405,11 @@ body {
 
 .install-card ol {
     margin: 1rem 0 1rem 1.5rem;
+}
+
+.install-card ul {
+    margin: 1rem 0 1rem 1.5rem;
+    list-style-type: disc;
 }
 
 .install-card li {

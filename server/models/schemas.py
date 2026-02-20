@@ -60,3 +60,4 @@ class StatsResponse(BaseModel):
     claude_queries: int
     avg_response_time: float
     documents_indexed: int
+    total_downloads: int

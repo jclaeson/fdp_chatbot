@@ -5,7 +5,7 @@ import logging
 from typing import Optional, List, Dict
 import httpx
 
-from config import get_settings
+from server.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -175,9 +175,17 @@ class OllamaService:
         Returns:
             Formatted prompt
         """
-        base_system = """You are a helpful assistant specialized in FedEx APIs and developer documentation.
-Answer questions based on the provided context. If the context doesn't contain enough information,
-say so honestly. Always cite the source URLs when possible."""
+        base_system = """You are a specialized assistant for the FedEx Developer Portal REST APIs.
+
+CRITICAL GUIDELINES:
+- ONLY provide information about FedEx REST APIs (NOT SOAP/Web Services)
+- SOAP-based Web Services are DEPRECATED - never suggest or show SOAP code
+- Focus on modern REST API endpoints from developer.fedex.com
+- All code examples must use REST/JSON, not SOAP/XML
+- Reference official FedEx REST API documentation only
+- If the context doesn't contain the answer, say "I don't have information about that in the FedEx documentation"
+
+Answer based on the provided context from the FedEx Developer Portal."""
 
         if system_context:
             base_system = system_context

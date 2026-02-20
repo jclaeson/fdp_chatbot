@@ -1,0 +1,36 @@
+# Azure-specific requirements for App Service deployment
+
+# Core dependencies from main requirements
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+python-dotenv==1.0.0
+anthropic==0.40.0
+httpx==0.25.1
+
+# RAG and Vector Store
+chromadb==0.4.18
+sentence-transformers==2.2.2
+torch==2.1.1
+transformers==4.35.2
+huggingface-hub==0.17.3
+tokenizers==0.14.1
+numpy==1.24.3
+
+# Scraping dependencies
+beautifulsoup4==4.12.2
+lxml==4.9.3
+aiohttp==3.9.0
+playwright==1.40.0
+markdownify==0.11.6
+
+# Azure-specific
+azure-identity==1.15.0
+azure-keyvault-secrets==4.7.0
+azure-storage-blob==12.19.0
+opencensus-ext-azure==1.1.9
+applicationinsights==0.11.10
+
+# Optional: if using Azure OpenAI instead of Anthropic
+# openai==1.3.7

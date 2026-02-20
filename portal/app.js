@@ -3,8 +3,27 @@
  */
 
 const API_BASE_URL = 'http://localhost:8000';
+const AUTH_KEY = 'fedex_api_auth';
 
 let currentConversationId = null;
+
+// Check authentication
+function isAuthenticated() {
+    const authToken = localStorage.getItem(AUTH_KEY);
+    const expiryTime = localStorage.getItem('fedex_api_auth_expiry');
+
+    if (!authToken || !expiryTime) {
+        return false;
+    }
+
+    if (Date.now() > parseInt(expiryTime)) {
+        localStorage.removeItem(AUTH_KEY);
+        localStorage.removeItem('fedex_api_auth_expiry');
+        return false;
+    }
+
+    return true;
+}
 
 // DOM elements
 const chatMessages = document.getElementById('chat-messages');
@@ -17,6 +36,12 @@ const docsCount = document.getElementById('docs-count');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication first
+    if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     loadStats();
     checkHealth();
 
@@ -36,6 +61,25 @@ document.addEventListener('DOMContentLoaded', () => {
             handleSendMessage();
         });
     });
+
+    // Logout functionality
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem(AUTH_KEY);
+                localStorage.removeItem('fedex_api_auth_expiry');
+                window.location.href = 'login.html';
+            }
+        });
+    }
+
+    // Track downloads
+    const downloadBtn = document.querySelector('a[download]');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', trackDownload);
+    }
 });
 
 async function loadStats() {
@@ -45,6 +89,12 @@ async function loadStats() {
             const stats = await response.json();
             if (docsCount) {
                 animateNumber(docsCount, stats.documents_indexed);
+            }
+
+            // Animate download count from real data
+            const downloadCount = document.getElementById('download-count');
+            if (downloadCount) {
+                animateNumber(downloadCount, stats.total_downloads);
             }
         }
     } catch (error) {
@@ -267,6 +317,17 @@ function animateNumber(element, target) {
     }
 
     requestAnimationFrame(update);
+}
+
+async function trackDownload() {
+    try {
+        await fetch(`${API_BASE_URL}/track-download`, {
+            method: 'POST'
+        });
+        console.log('Download tracked');
+    } catch (error) {
+        console.error('Failed to track download:', error);
+    }
 }
 
 // Periodic health check

@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     # Claude API
     claude_api_key: str = ""
-    claude_model: str = "claude-3-5-sonnet-20241022"
+    claude_model: str = "claude-sonnet-*"  # Auto-resolves to latest Sonnet version
 
     # Vector Store
     chroma_persist_dir: str = "../rag/chroma_db"

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Extension - FedEx API Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .extension-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .extension-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .extension-icon {
+            width: 128px;
+            height: 128px;
+            margin: 0 auto 2rem auto;
+            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .extension-card h1 {
+            margin: 0 0 1rem 0;
+            color: #4a148c;
+        }
+
+        .extension-card p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4a148c;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .install-steps {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .install-steps h3 {
+            margin: 0 0 1rem 0;
+            color: #4a148c;
+        }
+
+        .install-steps ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .install-steps li {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        code {
+            background: #e0e0e0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="extension-container">
+        <div class="extension-card">
+            <div class="extension-icon">
+                📦
+            </div>
+
+            <h1>FedEx API Assistant</h1>
+            <p>Chrome Extension for Quick Access to FedEx API Documentation</p>
+
+            <button id="download-btn" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                Download Extension
+            </button>
+
+            <ul class="feature-list">
+                <li>Quick access to FedEx API documentation</li>
+                <li>Instant API assistant chat</li>
+                <li>Code examples and best practices</li>
+                <li>Search FedEx Developer Portal</li>
+            </ul>
+
+            <div class="install-steps">
+                <h3>Installation Instructions</h3>
+                <ol>
+                    <li>Click the <strong>Download Extension</strong> button above</li>
+                    <li>Save the <code>fedex-api-assistant.zip</code> file to your computer</li>
+                    <li>Extract the ZIP file to a folder</li>
+                    <li>Open Chrome and go to <code>chrome://extensions/</code></li>
+                    <li>Enable <strong>Developer mode</strong> (toggle in top right)</li>
+                    <li>Click <strong>Load unpacked</strong></li>
+                    <li>Select the extracted folder</li>
+                    <li>The extension icon will appear in your toolbar!</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="home.html" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8000'
+            : 'https://fedex-chatbot-api.bluewater-bfc57c63.eastus.azurecontainerapps.io';
+
+        document.getElementById('download-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/download-extension`);
+
+                if (!response.ok) {
+                    throw new Error('Download failed');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fedex-api-assistant.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                alert('Extension downloaded! Follow the installation instructions below.');
+            } catch (error) {
+                console.error('Download failed:', error);
+                alert('Failed to download extension. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
